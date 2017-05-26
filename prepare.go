@@ -8,6 +8,7 @@ import (
 	"os"
 	"sort"
 	"strings"
+	"unicode"
 	"unicode/utf8"
 )
 
@@ -40,6 +41,10 @@ func main() {
 		char, size := utf8.DecodeRuneInString(fields[0])
 		if size != len(fields[0]) {
 			continue
+		}
+
+		if !unicode.In(char, unicode.Han) {
+			log.Fatalf("%c is not a Han character\n", char)
 		}
 
 		// Collect all pinyins of this character.
