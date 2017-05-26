@@ -66,8 +66,9 @@ func main() {
 	}
 
 	sort.Sort(runes(chars))
+	fmt.Println()
 	for _, char := range chars {
-		fmt.Printf("%c %s\n", char, strings.Join(pinyinsOf[char], " "))
+		fmt.Printf("%c%s\n", char, strings.Join(pinyinsOf[char], ","))
 	}
 }
 
