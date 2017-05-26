@@ -6,6 +6,7 @@ import (
 	"io"
 	"log"
 	"os"
+	"sort"
 	"strings"
 	"unicode/utf8"
 )
@@ -13,6 +14,8 @@ import (
 func main() {
 	reader := bufio.NewReader(os.Stdin)
 	lineno := 0
+	var chars []rune
+	pinyinsOf := map[rune][]string{}
 	for {
 		lineno++
 		line, err := reader.ReadString('\n')
@@ -39,20 +42,32 @@ func main() {
 			continue
 		}
 
-		// Write out character.
-		fmt.Print(fields[0])
-
-		// Write out every pinyin.
-		for _, f := range fields[2:] {
-			if i := strings.Index(f, ":"); i > -1 {
-				f = f[:i]
+		// Collect all pinyins of this character.
+		pinyins := make([]string, len(fields)-2)
+		for i, f := range fields[2:] {
+			if j := strings.Index(f, ":"); j > -1 {
+				f = f[:j]
 			}
 			// Make sure that this only consists of small letter.
 			if strings.TrimLeft(f, "abcdefghijklmnopqrstuvwxyz") != "" {
-				log.Fatalf("line %d has non-pinyin:", lineno)
+				log.Fatalf("line %d of pinyin data file has non-pinyin:",
+					lineno)
 			}
-			fmt.Print(" " + f)
+			pinyins[i] = f
 		}
-		fmt.Println()
+
+		chars = append(chars, char)
+		pinyinsOf[char] = pinyins
+	}
+
+	sort.Sort(runes(chars))
+	for _, char := range chars {
+		fmt.Printf("%c %s\n", char, strings.Join(pinyinsOf[char], " "))
 	}
 }
+
+type runes []rune
+
+func (rs runes) Len() int           { return len(rs) }
+func (rs runes) Less(i, j int) bool { return rs[i] < rs[j] }
+func (rs runes) Swap(i, j int)      { rs[i], rs[j] = rs[j], rs[i] }
