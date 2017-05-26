@@ -13,20 +13,20 @@ import (
 )
 
 var (
-	pinyinDataPath = flag.String("pinyin-data", "", "Path to pinyin data file")
-	pinyinDataFile *os.File
+	dataPath = flag.String("data", "", "Path to pinyin data file")
+	dataFile *os.File
 )
 
 func main() {
 	flag.Parse()
-	if *pinyinDataPath == "" {
+	if *dataPath == "" {
 		flag.Usage()
-		log.Fatalf("must specify -pinyin-data")
+		log.Fatalf("must specify -data")
 	}
 	var err error
-	pinyinDataFile, err = os.Open(*pinyinDataPath)
+	dataFile, err = os.Open(*dataPath)
 	if err != nil {
-		log.Fatalf("cannot open pinyin data file %s: %v", *pinyinDataPath, err)
+		log.Fatalf("cannot open pinyin data file %s: %v", *dataPath, err)
 	}
 
 	args := flag.Args()
@@ -69,11 +69,11 @@ func convert(word, what string) {
 }
 
 func find(r rune) []string {
-	_, err := pinyinDataFile.Seek(0, 0)
+	_, err := dataFile.Seek(0, 0)
 	if err != nil {
 		log.Fatalf("cannot seek pinyin data file: %v", err)
 	}
-	rd := bufio.NewReader(pinyinDataFile)
+	rd := bufio.NewReader(dataFile)
 	lineno := 0
 	for {
 		lineno++

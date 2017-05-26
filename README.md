@@ -1,6 +1,7 @@
 # pinyin-of
 
-Find the pinyin of a Chinese character. Contains the following:
+Find all the possible pinyins of a series of Chinese characters. Contains the
+following:
 
 *   The original source data (obtained from
     https://download.fcitx-im.org/data/dict.utf8-20170423.tar.xz),
